@@ -663,58 +663,57 @@ function closeLb(e){
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb()});
 </script>
 
-<!-- ══ REPRODUCTOR FLOTANTE ══ -->
+<!-- ══ REPRODUCTOR FLOTANTE MP3 ══ -->
+<audio id="bg-audio" loop>
+  <source src="Perfecta.mp3" type="audio/mpeg">
+</audio>
+
 <style>
 #music-player {
   position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
+  bottom: 1.5rem; right: 1.5rem;
   z-index: 300;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  display: flex; align-items: center; gap: 10px;
   background: #fff;
   border: 2px solid #ffd6e7;
   border-radius: 999px;
-  padding: .5rem .9rem .5rem .6rem;
+  padding: .5rem 1rem .5rem .6rem;
   box-shadow: 3px 4px 0 #ffd6e7;
   font-family: 'Caveat', cursive;
   transition: all .3s ease;
 }
 #music-player:hover { transform: translateY(-2px); box-shadow: 4px 6px 0 #ffd6e7; }
 #music-btn {
-  width: 38px; height: 38px;
-  border-radius: 50%;
+  width: 40px; height: 40px; border-radius: 50%;
   background: linear-gradient(135deg, #ff9a9e, #fecfef);
   border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem;
-  flex-shrink: 0;
+  font-size: 1.15rem; flex-shrink: 0;
   transition: transform .2s;
 }
 #music-btn:hover { transform: scale(1.1); }
 #music-info { line-height: 1.2; }
 #music-title { font-size: 1rem; font-weight: 600; color: #d63384; }
-#music-artist { font-size: .8rem; color: #e83e8c; opacity: .8; }
+#music-artist { font-size: .78rem; color: #e83e8c; opacity: .8; }
+#music-vol { width: 60px; accent-color: #e83e8c; cursor: pointer; }
 #music-eq {
-  display: flex; gap: 2px; align-items: flex-end; height: 16px; margin-left: 4px;
+  display: flex; gap: 2px; align-items: flex-end;
+  height: 16px; margin-left: 2px;
 }
 #music-eq span {
-  display: block; width: 3px; background: #e83e8c; border-radius: 2px;
-  animation: eq 0.8s ease infinite;
+  display: block; width: 3px; background: #e83e8c;
+  border-radius: 2px; animation: eq .8s ease infinite;
 }
 #music-eq span:nth-child(1){height:6px;animation-delay:0s}
-#music-eq span:nth-child(2){height:12px;animation-delay:.15s}
+#music-eq span:nth-child(2){height:13px;animation-delay:.15s}
 #music-eq span:nth-child(3){height:8px;animation-delay:.3s}
 #music-eq span:nth-child(4){height:14px;animation-delay:.1s}
-#music-eq span:nth-child(5){height:6px;animation-delay:.25s}
-#music-eq.paused span { animation-play-state: paused; height: 4px !important; }
+#music-eq span:nth-child(5){height:5px;animation-delay:.25s}
+#music-eq.paused span { animation-play-state:paused; height:3px !important; }
 @keyframes eq {
-  0%,100% { transform: scaleY(1); }
-  50%      { transform: scaleY(1.8); }
+  0%,100%{ transform:scaleY(1); }
+  50%    { transform:scaleY(1.9); }
 }
-/* YouTube iframe oculto */
-#yt-frame { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 </style>
 
 <div id="music-player">
@@ -726,51 +725,30 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb()});
   <div id="music-eq" class="paused">
     <span></span><span></span><span></span><span></span><span></span>
   </div>
+  <input id="music-vol" type="range" min="0" max="1" step="0.05" value="0.6"
+         oninput="document.getElementById('bg-audio').volume=this.value" title="Volumen"/>
 </div>
 
-<!-- YouTube IFrame API -->
-<div id="yt-frame"></div>
 <script>
-var ytPlayer, ytReady = false, isPlaying = false;
-
-window.onYouTubeIframeAPIReady = function() {
-  ytReady = true;
-  ytPlayer = new YT.Player('yt-frame', {
-    height: '1', width: '1',
-    videoId: 'YlPO_ZNm-BA',  // Miranda! - Perfecta
-    playerVars: { autoplay: 0, controls: 0, loop: 1, playlist: 'YlPO_ZNm-BA' },
-    events: {
-      onReady: function(e) {
-        e.target.setVolume(60);
-      }
-    }
-  });
-};
-
-// Cargar API de YouTube
-(function(){
-  var tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/iframe_api";
-  document.head.appendChild(tag);
-})();
+var isPlaying = false;
+var audio = document.getElementById('bg-audio');
+audio.volume = 0.6;
 
 function toggleMusic() {
-  if (!ytReady || !ytPlayer) return;
-  const btn = document.getElementById('music-btn');
-  const eq  = document.getElementById('music-eq');
+  var btn = document.getElementById('music-btn');
+  var eq  = document.getElementById('music-eq');
   if (!isPlaying) {
-    ytPlayer.playVideo();
+    audio.play();
     btn.textContent = '⏸️';
     eq.classList.remove('paused');
     isPlaying = true;
   } else {
-    ytPlayer.pauseVideo();
+    audio.pause();
     btn.textContent = '▶️';
     eq.classList.add('paused');
     isPlaying = false;
   }
 }
 </script>
-<script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
